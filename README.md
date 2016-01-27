@@ -1,6 +1,12 @@
 # archives-nz-xml-to-csv
 Code to convert EDRMS XML to CSV
 
+Current version outputs to two streams (file data on stdout, and folder data on stderr) and a file, output.log.
+
+To run:
+
+    python process-edrms-xml.py > file-object-data.csv 2> business-classification-data.csv
+
 ### License
 
 Copyright (c) 2016 
