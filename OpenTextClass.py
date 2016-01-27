@@ -87,8 +87,12 @@ class HandleOpenTextXML:
       row['FileName'] = docName
       
       #only output a version if we've an integer
-      if isinstance( version, int ):
-         row['FileVersion'] = version
+      #if isinstance( version, int ):
+      try: 
+         version = int(version)
+         row['FileVersion'] = str(version)
+      except ValueError as e:
+         row['FileVersion'] = ''
       
       row['Path'] = candidate_file_path.lstrip('\\') + "\\"
       
