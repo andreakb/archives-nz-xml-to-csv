@@ -41,13 +41,13 @@ class read_xml:
    def scan_xml(self):
       document_count = 0
       self.rows = []
-      for dp, dn, filenames in os.walk(self.xml_loc):
+      for dir_paths, dir_names, filenames in os.walk(self.xml_loc):
          for f in filenames:
             if os.path.splitext(f)[1] == '.xml':
                
                #create full path and read XML
                #note: consider if we need to protect create-write-access dates
-               fullpath = os.path.abspath(os.path.join(dp, f))
+               fullpath = os.path.abspath(os.path.join(dir_paths, f))
 
                if re.match("(^\d*\.xml$)", f) is not None:
                   xmlfile = open(fullpath, 'rb')
