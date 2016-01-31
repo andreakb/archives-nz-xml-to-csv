@@ -1,5 +1,6 @@
 import os
 import re
+import argparse
 import sys
 import time
 import xml.etree.ElementTree as etree
@@ -9,16 +10,20 @@ class read_xml:
 
    #handler to import
    xml_handler = HandleOpenTextXML()
-
-   #location of the XML we want to extract from
-   xml_loc = ""
-      
-   def __init__(self):
+   
+   #where the xml resides...
+   xml_loc = ''
+   
+   def __init__(self, xml_loc):
+      self.xml_loc = xml_loc
       self.__csv_structure__()
       header_row = ''
-      for title in self.header:
-         header_row = header_row + '"' + title + '",'
-      sys.stdout.write(header_row.rstrip(',') + "\n")
+      if os.path.isdir(self.xml_loc):
+         for title in self.header:
+            header_row = header_row + '"' + title + '",'
+         sys.stdout.write(header_row.rstrip(',') + "\n")
+      else:
+         sys.stderr.write("WARNING: Input directory " + self.xml_loc + " is not a directory.")
 
    def __csv_structure__(self):
       self.header = self.xml_handler.csv_columns
@@ -35,7 +40,8 @@ class read_xml:
          str = str.strip(',') + "\n" 
       sys.stdout.write(str)
             
-   def scan_xml(self):           
+   def scan_xml(self):
+      document_count = 0
       self.rows = []
       for dp, dn, filenames in os.walk(self.xml_loc):
          for f in filenames:
@@ -57,16 +63,46 @@ class read_xml:
                   root.clear()
                   
                   #time.sleep(0.03) #throttle if necessary
-
+         
       self.output_csv(self.rows)
       return document_count
       
-#time script execution time roughly...
-t0 = time.clock()
+def main():
 
-xml = read_xml()
-document_count = xml.scan_xml()
+   #	Usage: 	--csv [droid report]
 
-log = open('output.log', 'wb')
-log.write(str(document_count) + " files output" + "\n")
-log.write(str(time.clock() - t0) + " script execution time" + "\n")
+   #	Handle command line arguments for the script
+   parser = argparse.ArgumentParser(description='Extract and Flatten XML to CSV - ideal for EDRMs export.')
+   parser.add_argument('--loc', help='Mandatory: Source folder of the XML.', default=False)
+
+   start_time = time.time()
+
+   if len(sys.argv) == 1:
+      parser.print_help()
+      sys.exit(1)
+
+   #	Parse arguments into namespace object to reference later in the script
+   global args
+   args = parser.parse_args()
+   
+   if args.loc:
+
+      #location of the XML we want to extract from, #e.g.
+      #xml_loc = "e:\transfer-folder\open-text\disp_20151111101907_1000\xml"
+   
+      #time script execution time roughly...
+      t0 = time.clock()
+
+      xml = read_xml(args.loc)
+      document_count = xml.scan_xml()
+
+      log = open('output.log', 'wb')
+      log.write(str(document_count) + " files output" + "\n")
+      log.write(str(time.clock() - t0) + " script execution time" + "\n")
+   
+   else:
+      parser.print_help()
+      sys.exit(1)
+
+if __name__ == "__main__":      
+   main()
