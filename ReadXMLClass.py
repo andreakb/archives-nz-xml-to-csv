@@ -11,11 +11,15 @@ class read_xml:
    #where the xml resides...
    xml_loc = ''
    
-   def __init__(self, xml_loc, handler):
+   def __init__(self, xml_loc, xml_handler):
    
       #initialize variables...
       self.xml_loc = xml_loc
-      self.xml_handler = handler
+   
+      if self.__initiate_handler__(xml_handler) == True:
+         self.xml_handler = xml_handler
+      else:
+         sys.exit("ERROR: Handler not configured correctly.")
 
       #initial output...
       self.__csv_structure__()
@@ -26,6 +30,20 @@ class read_xml:
          sys.stdout.write(header_row.rstrip(',') + "\n")
       else:
          sys.stderr.write("WARNING: Input directory " + self.xml_loc + " is not a directory.")
+
+   def __initiate_handler__(self, xml_handler):
+      configured = False
+      #
+      # xml_handler needs to implement:
+      #      self.header = self.xml_handler.csv_columns(...)   [LIST]
+      #      self.row_dict = self.xml_handler.csv_rows(...)    [DICT]
+      #      self.xml_handler.xml_to_csv(...)                  [FUNCTION]
+      #
+      if "xml_to_csv" in dir(xml_handler):
+         if "csv_columns" in dir(xml_handler) and "csv_rows" in dir(xml_handler):
+            if type(xml_handler.csv_columns) is list and type(xml_handler.csv_rows) is dict:
+               configured = True
+      return configured
 
    def __csv_structure__(self):
       self.header = self.xml_handler.csv_columns

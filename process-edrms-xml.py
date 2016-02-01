@@ -5,11 +5,12 @@ import time
 from ReadXMLClass import read_xml
 from OpenTextClass import HandleOpenTextXML
 
-# handler provided needs to implement a function xml_to_csv()
-# ReadXML will do the following:
-#      self.header = self.xml_handler.csv_columns(...)
-#      self.row_dict = self.xml_handler.csv_rows(...)
-#      self.xml_handler.xml_to_csv(...)
+
+# xml_handler needs to implement:
+#      self.header = self.xml_handler.csv_columns(...)   [LIST]
+#      self.row_dict = self.xml_handler.csv_rows(...)    [DICT]
+#      self.xml_handler.xml_to_csv(...)                  [FUNCTION]
+#
 global XML_HANDLER
 XML_HANDLER = HandleOpenTextXML()
       
