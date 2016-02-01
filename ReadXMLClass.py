@@ -2,18 +2,22 @@
 import re
 import sys
 import xml.etree.ElementTree as etree
-from OpenTextClass import HandleOpenTextXML
 
 class read_xml:
 
-   #handler to import
-   xml_handler = HandleOpenTextXML()
+   #handler for the XML
+   xml_handler = ''
    
    #where the xml resides...
    xml_loc = ''
    
-   def __init__(self, xml_loc):
+   def __init__(self, xml_loc, handler):
+   
+      #initialize variables...
       self.xml_loc = xml_loc
+      self.xml_handler = handler
+
+      #initial output...
       self.__csv_structure__()
       header_row = ''
       if os.path.isdir(self.xml_loc):

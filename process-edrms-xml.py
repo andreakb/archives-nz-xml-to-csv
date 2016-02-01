@@ -3,6 +3,15 @@ import argparse
 import sys
 import time
 from ReadXMLClass import read_xml
+from OpenTextClass import HandleOpenTextXML
+
+# handler provided needs to implement a function xml_to_csv()
+# ReadXML will do the following:
+#      self.header = self.xml_handler.csv_columns(...)
+#      self.row_dict = self.xml_handler.csv_rows(...)
+#      self.xml_handler.xml_to_csv(...)
+global XML_HANDLER
+XML_HANDLER = HandleOpenTextXML()
       
 def main():
 
@@ -30,7 +39,7 @@ def main():
       #time script execution time roughly...
       t0 = time.clock()
 
-      xml = read_xml(args.loc)
+      xml = read_xml(args.loc, XML_HANDLER)
       document_count = xml.scan_xml()
 
       log = open('output.log', 'wb')
