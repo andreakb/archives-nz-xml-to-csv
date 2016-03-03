@@ -1,7 +1,11 @@
 import sys 
 from XMLHandler import XMLHandlerFunctions
+import xml.etree.ElementTree as etree
 
 class HandleOpenTextXML:
+
+   def __init__(self):
+      self.writeItemLevelXML = False
 
    xmlhelper = XMLHandlerFunctions()
 
@@ -65,7 +69,13 @@ class HandleOpenTextXML:
             
       return candidate_file_path
 
+   def __writeItemLevelXML__(self, element, objectname):
+      fname = ('xml_output\\' + str(''.join(objectname.split('.')[:-1])) + '.xml')
+      et = etree.ElementTree(element)
+      et.write(fname, encoding="utf-8", xml_declaration=True)
+   
    def __opentextDocumentSection__(self, element, candidate_file_path, row_dict):
+      
       #create a new CSV row per Doc discovered
       row = dict(row_dict)
    
@@ -77,6 +87,9 @@ class HandleOpenTextXML:
       docName = element.attrib['Link'].split('\\', 1)[1]
       version = docName.rsplit('.', 2)[1]
       
+      if self.writeItemLevelXML == True:
+         self.__writeItemLevelXML__(element, docName)
+      
       '''sys.stderr.write("Found document metadata." + "\n")
       sys.stderr.write("ID: " + str(docID) + "\n")
       sys.stderr.write("Name: " + str(docName) + "\n")
@@ -85,7 +98,7 @@ class HandleOpenTextXML:
       
       row['FileID'] = docID
       row['FileName'] = docName
-      
+            
       #only output a version if we've an integer
       #if isinstance( version, int ):
       try: 

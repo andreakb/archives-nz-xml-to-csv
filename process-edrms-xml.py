@@ -5,7 +5,6 @@ import time
 from ReadXMLClass import read_xml
 from OpenTextClass import HandleOpenTextXML
 
-
 # xml_handler needs to implement:
 #      self.header = self.xml_handler.csv_columns(...)   [LIST]
 #      self.row_dict = self.xml_handler.csv_rows(...)    [DICT]
